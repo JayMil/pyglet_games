@@ -17,11 +17,21 @@ player_ship = pyglet.sprite.Sprite(img=resources.player_image, x=400, y=300, bat
 
 asteroids = load.asteroids(3, player_ship.position, batch=main_batch)
 
+game_objects = [player_ship] + asteroids
+
+def update(dt):
+    for obj in game_objects:
+        obj.update(dt)
+
 
 @game_window.event
 def on_draw():
     game_window.clear()
 
     main_batch.draw()
+
+def main():
+    pyglet.clock.schedule_interval(update, 1/120.0)
+    pyglet.app.run()
 
 
