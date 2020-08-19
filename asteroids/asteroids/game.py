@@ -31,6 +31,11 @@ def update(dt):
         to_add.extend(obj.new_objects)
         obj.new_objects = []
 
+    # remove dead objects
+    for to_remove in [obj for obj in game_objects if obj.dead]:
+        to_remove.delete()
+        game_objects.remove(to_remove)
+
     # detect collisions
     for i in range(len(game_objects)):
         for j in range(i+1, len(game_objects)):
@@ -42,10 +47,6 @@ def update(dt):
                     obj_1.handle_collision_with(obj_2)
                     obj_2.handle_collision_with(obj_1)
 
-    # remove dead objects
-    for to_remove in [obj for obj in game_objects if obj.dead]:
-        to_remove.delete()
-        game_objects.remove(to_remove)
 
     # add child objects
     game_objects.extend(to_add)

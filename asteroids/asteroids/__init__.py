@@ -1,6 +1,6 @@
-import astroid
+import game
 import load
 
 if __name__ == '__main__':
-    astroid.main()
+    game.main()
 
