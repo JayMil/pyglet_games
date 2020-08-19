@@ -9,6 +9,8 @@ class PhysicalObject(pyglet.sprite.Sprite):
         self.velocity_x, self.velocity_y = 0.0, 0.0
         self.dead = False
 
+        self.new_objects = []
+
     def update(self, dt):
         self.x += self.velocity_x * dt
         self.y += self.velocity_y * dt

@@ -23,8 +23,12 @@ asteroids = load.asteroids(3, player_ship.position, batch=main_batch)
 game_objects = [player_ship] + asteroids
 
 def update(dt):
+
+    to_add = []
     for obj in game_objects:
         obj.update(dt)
+        to_add.extend(obj.new_objects)
+        obj.new_objects = []
 
     for i in range(len(game_objects)):
         for j in range(i+1, len(game_objects)):
@@ -39,6 +43,8 @@ def update(dt):
     for to_remove in [obj for obj in game_objects if obj.dead]:
         to_remove.delete()
         game_objects.remove(to_remove)
+
+        game_objects.extend(to_add)
 
 
 @game_window.event
