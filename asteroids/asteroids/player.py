@@ -70,7 +70,7 @@ class Player(physicalobject.PhysicalObject):
     def fire(self):
         if not self.dead:
             angle_radians = -math.radians(self.rotation)
-            ship_radius = self.image.width/2
+            ship_radius = self.width/2
             bullet_x = self.x + math.cos(angle_radians) * ship_radius
             bullet_y = self.y + math.sin(angle_radians) * ship_radius
             new_bullet = bullet.Bullet(bullet_x, bullet_y, batch=self.batch)

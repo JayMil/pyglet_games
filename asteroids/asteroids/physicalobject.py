@@ -19,10 +19,11 @@ class PhysicalObject(pyglet.sprite.Sprite):
         self.check_bounds()
 
     def check_bounds(self):
-        min_x = -self.image.width / 2
-        min_y = -self.image.height / 2
-        max_x = 800 + self.image.width / 2
-        max_y = 600 + self.image.height / 2
+        min_x = -self.width / 2
+        min_y = -self.height / 2
+        max_x = 800 + self.width / 2
+        max_y = 600 + self.height / 2
+
         if self.x < min_x:
             self.x = max_x
         elif self.x > max_x:
@@ -38,7 +39,7 @@ class PhysicalObject(pyglet.sprite.Sprite):
         if self.is_bullet and not other_object.reacts_to_bullets:
             return False
 
-        collision_distance = self.image.width/2 + other_object.image.width/2
+        collision_distance = self.width/2 + other_object.width/2
         actual_distance = util.distance(self.position, other_object.position)
 
         return (actual_distance <= collision_distance)
