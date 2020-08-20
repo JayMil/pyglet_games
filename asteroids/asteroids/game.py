@@ -49,7 +49,7 @@ class Game:
         self.game_over_score_label.text = ""
 
         self.player_ship = self.__create_new_player_ship()
-        self.asteroids = load.asteroids(3, self.player_ship.position, batch=self.main_batch)
+        self.asteroids = load.asteroids(4, self.player_ship.position, batch=self.main_batch)
         self.player_lives = load.player_lives(3, batch=self.main_batch)
         self.game_objects = [self.player_ship] + self.asteroids
 
@@ -80,6 +80,9 @@ class Game:
             else:
                 self.__game_over()
 
+    def __check_win(self):
+        if len(self.game_objects) == 1 and not self.player_ship.dead:
+            self.__game_over()
 
     def __update_game_objects(self, dt):
         """ Call update on each game object and return list of child objects """
@@ -147,6 +150,8 @@ class Game:
         self.game_objects.extend(to_add)
 
         self.__check_player_death()
+
+        self.__check_win()
 
 
     def draw(self):
