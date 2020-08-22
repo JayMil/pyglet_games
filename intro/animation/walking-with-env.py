@@ -8,7 +8,7 @@ main_batch = pyglet.graphics.Batch()
 
 
 
-pyglet.text.Label('Walking Animation Example',
+pyglet.text.Label('Walking Example',
                             font_name='Times New Roman',
                             font_size=24,
                             x=window.width//2, y=window.height-30,
