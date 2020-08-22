@@ -14,4 +14,19 @@ explosion_seq = pyglet.image.ImageGrid(explosion_image, 4, 5)
 explosion_seq1 = explosion_seq[5:9] + explosion_seq[:4]
 explosion_seq2 = explosion_seq[15:] + explosion_seq[11:14]
 
-#explosion_tex_seq = pyglet.image.TextureGrid(explosion_seq1)
+
+character_image = pyglet.resource.image("character1.png")
+character_seq = pyglet.image.ImageGrid(character_image, 8, 12)
+character_seq_walk_down = character_seq[84:86]
+character_seq_face_down = character_seq[85]
+character_seq_walk_up = character_seq[48:50]
+character_seq_face_up = character_seq[49]
+character_seq_walk_right = character_seq[60:62]
+character_seq_face_right = character_seq[61]
+character_seq_walk_left = character_seq[72:74]
+character_seq_face_left = character_seq[73]
+
+# 48:50 = away
+# 60:62 = right
+# 72:74 = left
+# 84:86 = towards
