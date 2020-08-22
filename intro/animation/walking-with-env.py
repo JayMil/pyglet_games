@@ -9,10 +9,17 @@ class Game:
 
         self.main_batch = pyglet.graphics.Batch()
 
+        self.create_background()
         self.create_labels()
-        self.hero = Hero(self.main_batch)
+        self.hero = Hero(start_pos=(40, self.window.height-100), batch=self.main_batch)
         self.window.push_handlers(self)
         self.window.push_handlers(self.hero)
+
+
+    def create_background(self):
+        self.bg = pyglet.sprite.Sprite(img=resources.background_image, 
+                                batch=self.main_batch,
+                                x=self.window.width//2, y=self.window.height//2)
 
     def create_labels(self):
         pyglet.text.Label('Walking Example',
@@ -20,6 +27,7 @@ class Game:
                                     font_size=24,
                                     x=self.window.width//2, y=self.window.height-30,
                                     anchor_x='center', batch=self.main_batch)
+
 
         pyglet.text.Label('Move with direction keys',
                                     font_name='Times New Roman',
@@ -35,6 +43,7 @@ class Game:
 
     def draw(self):
         self.window.clear()
+        self.bg.draw()
         self.main_batch.draw()
 
     def update(self, dt):
@@ -48,12 +57,12 @@ class Game:
 
 
 class Hero:
-    def __init__(self, batch=None):
+    def __init__(self, start_pos=(20, 200), batch=None):
         self.character_walk_up_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_up, duration=0.1,loop=True)
         self.character_walk_down_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_down, duration=0.1,loop=True)
         self.character_walk_left_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_left, duration=0.1,loop=True)
         self.character_walk_right_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_right, duration=0.1,loop=True)
-        self.character = pyglet.sprite.Sprite(img=self.character_walk_down_ani, batch=batch, x=20, y=240)
+        self.character = pyglet.sprite.Sprite(img=self.character_walk_down_ani, batch=batch, x=start_pos[0], y=start_pos[1])
 
         self.speed = 2
 
@@ -121,7 +130,8 @@ class Hero:
 if __name__ == '__main__':
     pass
     
-window = pyglet.window.Window(1080, 768)
+#window = pyglet.window.Window(1080, 768)
+window = pyglet.window.Window(768, 576)
 game = Game(window)
 pyglet.clock.schedule_interval(game.update, 1/120.0)
 
