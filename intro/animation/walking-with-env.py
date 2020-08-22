@@ -2,113 +2,133 @@ import pyglet
 from pyglet.window import key
 import resources
 
-#window = pyglet.window.Window(720, 576)
-window = pyglet.window.Window(1080, 768)
-main_batch = pyglet.graphics.Batch()
+
+class Game:
+    def __init__(self, window):
+        self.window = window
+
+        self.main_batch = pyglet.graphics.Batch()
+
+        self.create_labels()
+        self.hero = Hero(self.main_batch)
+        self.window.push_handlers(self)
+        self.window.push_handlers(self.hero)
+
+    def create_labels(self):
+        pyglet.text.Label('Walking Example',
+                                    font_name='Times New Roman',
+                                    font_size=24,
+                                    x=self.window.width//2, y=self.window.height-30,
+                                    anchor_x='center', batch=self.main_batch)
+
+        pyglet.text.Label('Move with direction keys',
+                                    font_name='Times New Roman',
+                                    font_size=16,
+                                    x=20, y=self.window.height-60,
+                                    batch=self.main_batch)
+
+        pyglet.text.Label("Move fast with 'f' key",
+                                    font_name='Times New Roman',
+                                    font_size=16,
+                                    x=20, y=self.window.height-90,
+                                    batch=self.main_batch)
+
+    def draw(self):
+        self.window.clear()
+        self.main_batch.draw()
+
+    def update(self, dt):
+        self.hero.update(dt)
+
+    def on_key_press(self, symbol, modifiers):
+        pass
+
+    def on_key_release(self, symbol, modifiers):
+        pass
 
 
+class Hero:
+    def __init__(self, batch=None):
+        self.character_walk_up_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_up, duration=0.1,loop=True)
+        self.character_walk_down_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_down, duration=0.1,loop=True)
+        self.character_walk_left_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_left, duration=0.1,loop=True)
+        self.character_walk_right_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_right, duration=0.1,loop=True)
+        self.character = pyglet.sprite.Sprite(img=self.character_walk_down_ani, batch=batch, x=20, y=240)
 
-pyglet.text.Label('Walking Example',
-                            font_name='Times New Roman',
-                            font_size=24,
-                            x=window.width//2, y=window.height-30,
-                            anchor_x='center', batch=main_batch)
+        self.speed = 2
 
-pyglet.text.Label('Move with direction keys',
-                            font_name='Times New Roman',
-                            font_size=16,
-                            x=20, y=window.height-60,
-                            batch=main_batch)
+        self.character_keys = dict(up=False, down=False, 
+                                    left=False, right=False,
+                                    fast=False)
 
-pyglet.text.Label("Move fast with 'f' key",
-                            font_name='Times New Roman',
-                            font_size=16,
-                            x=20, y=window.height-90,
-                            batch=main_batch)
+    def update(self, dt):
+        if self.character_keys['fast']:
+            self.speed = 4
+        else:
+            self.speed = 2
+
+        if self.character_keys['up']:
+            if self.character.image != self.character_walk_up_ani:
+                self.character.image = self.character_walk_up_ani
+            self.character.y += self.speed
+        elif self.character_keys['down']:
+            if self.character.image != self.character_walk_down_ani:
+                self.character.image = self.character_walk_down_ani
+            self.character.y -= self.speed
+        elif self.character_keys['left']:
+            if self.character.image != self.character_walk_left_ani:
+                self.character.image = self.character_walk_left_ani
+            self.character.x -= self.speed
+        elif self.character_keys['right']:
+            if self.character.image != self.character_walk_right_ani:
+                self.character.image = self.character_walk_right_ani
+            self.character.x += self.speed
+        else:
+            if self.character.image == self.character_walk_up_ani:
+                self.character.image = resources.character_seq_face_up
+            elif self.character.image == self.character_walk_down_ani:
+                self.character.image = resources.character_seq_face_down
+            elif self.character.image == self.character_walk_left_ani:
+                self.character.image = resources.character_seq_face_left
+            elif self.character.image == self.character_walk_right_ani:
+                self.character.image = resources.character_seq_face_right
+
+    def on_key_press(self, symbol, modifiers):
+        if symbol == key.UP:
+            self.character_keys['up'] = True
+        elif symbol == key.DOWN:
+            self.character_keys['down'] = True
+        elif symbol == key.LEFT:
+            self.character_keys['left'] = True
+        elif symbol == key.RIGHT:
+            self.character_keys['right'] = True
+        elif symbol == key.F:
+            self.character_keys['fast'] = True
+
+    def on_key_release(self, symbol, modifiers):
+        if symbol == key.UP:
+            self.character_keys['up'] = False
+        elif symbol == key.DOWN:
+            self.character_keys['down'] = False
+        elif symbol == key.LEFT:
+            self.character_keys['left'] = False
+        elif symbol == key.RIGHT:
+            self.character_keys['right'] = False
+        elif symbol == key.F:
+            self.character_keys['fast'] = False
 
 
-
-
-exp1_ani = pyglet.image.Animation.from_image_sequence(resources.explosion_seq1, duration=0.1,loop=False)
-exp2_ani = pyglet.image.Animation.from_image_sequence(resources.explosion_seq2, duration=0.1,loop=False)
-
-character_walk_up_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_up, duration=0.1,loop=True)
-character_walk_down_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_down, duration=0.1,loop=True)
-character_walk_left_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_left, duration=0.1,loop=True)
-character_walk_right_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_right, duration=0.1,loop=True)
-
-character_keys = dict(up=False, down=False, left=False, right=False,
-                      fast=False)
-character = pyglet.sprite.Sprite(img=character_walk_down_ani, batch=main_batch, x=20, y=240)
-speed = 2
-
-def update(dt):
-    if character_keys['fast']:
-        speed = 4
-    else:
-        speed = 2
-
-    if character_keys['up']:
-        if character.image != character_walk_up_ani:
-            character.image = character_walk_up_ani
-        character.y += speed
-    elif character_keys['down']:
-        if character.image != character_walk_down_ani:
-            character.image = character_walk_down_ani
-        character.y -= speed
-    elif character_keys['left']:
-        if character.image != character_walk_left_ani:
-            character.image = character_walk_left_ani
-        character.x -= speed
-    elif character_keys['right']:
-        if character.image != character_walk_right_ani:
-            character.image = character_walk_right_ani
-        character.x += speed
-    else:
-        if character.image == character_walk_up_ani:
-            character.image = resources.character_seq_face_up
-        elif character.image == character_walk_down_ani:
-            character.image = resources.character_seq_face_down
-        elif character.image == character_walk_left_ani:
-            character.image = resources.character_seq_face_left
-        elif character.image == character_walk_right_ani:
-            character.image = resources.character_seq_face_right
+if __name__ == '__main__':
+    pass
     
-@window.event
-def on_key_press(symbol, modifiers):
-    if symbol == key.J:
-        exp1 = pyglet.sprite.Sprite(img=exp1_ani, batch=main_batch, x=20, y=240)
-    elif symbol == key.K:
-        exp1 = pyglet.sprite.Sprite(img=exp2_ani, batch=main_batch, x=20, y=240)
-    elif symbol == key.UP:
-        character_keys['up'] = True
-    elif symbol == key.DOWN:
-        character_keys['down'] = True
-    elif symbol == key.LEFT:
-        character_keys['left'] = True
-    elif symbol == key.RIGHT:
-        character_keys['right'] = True
-    elif symbol == key.F:
-        character_keys['fast'] = True
-
-@window.event
-def on_key_release(symbol, modifiers):
-    if symbol == key.UP:
-        character_keys['up'] = False
-    elif symbol == key.DOWN:
-        character_keys['down'] = False
-    elif symbol == key.LEFT:
-        character_keys['left'] = False
-    elif symbol == key.RIGHT:
-        character_keys['right'] = False
-    elif symbol == key.F:
-        character_keys['fast'] = False
-
+window = pyglet.window.Window(1080, 768)
+game = Game(window)
+pyglet.clock.schedule_interval(game.update, 1/120.0)
 
 @window.event
 def on_draw():
-    window.clear()
-    main_batch.draw()
+    game.draw()
 
-pyglet.clock.schedule_interval(update, 1/120.0)
 pyglet.app.run()
+
+
