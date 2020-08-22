@@ -1,3 +1,3 @@
 .PHONY: animation
 animation:
-	python3 animation.py
+	python3 animation/animation.py
