@@ -15,7 +15,6 @@ class Game:
         self.window.push_handlers(self)
         self.window.push_handlers(self.hero)
 
-
     def create_background(self):
         self.bg = pyglet.sprite.Sprite(img=resources.background_image, 
                                 batch=self.main_batch,
@@ -55,15 +54,67 @@ class Game:
     def on_key_release(self, symbol, modifiers):
         pass
 
+class HeroImages():
+    ''' Image References for Hero Sprite '''
+    def __init__(self):
+        self.walk_up = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_up, duration=0.1,loop=True)
+        self.walk_down = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_down, duration=0.1,loop=True)
+        self.walk_left = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_left, duration=0.1,loop=True)
+        self.walk_right = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_right, duration=0.1,loop=True)
 
-class Hero:
-    def __init__(self, start_pos=(20, 200), batch=None):
-        self.character_walk_up_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_up, duration=0.1,loop=True)
-        self.character_walk_down_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_down, duration=0.1,loop=True)
-        self.character_walk_left_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_left, duration=0.1,loop=True)
-        self.character_walk_right_ani = pyglet.image.Animation.from_image_sequence(resources.character_seq_walk_right, duration=0.1,loop=True)
-        self.character = pyglet.sprite.Sprite(img=self.character_walk_down_ani, batch=batch, x=start_pos[0], y=start_pos[1])
+        self.face_up = resources.character_seq_face_up
+        self.face_down = resources.character_seq_face_down
+        self.face_left = resources.character_seq_face_left
+        self.face_right = resources.character_seq_face_right
 
+
+class PhysicalObject(pyglet.sprite.Sprite):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.velocity_x, self.velocity_y = 0.0, 0.0
+        self.dead = False
+
+        self.new_objects = []
+
+    def update(self, dt):
+        self.x += self.velocity_x * dt
+        self.y += self.velocity_y * dt
+        self.check_bounds()
+
+    def check_bounds(self):
+        min_x = -self.width / 2
+        min_y = -self.height / 2
+        max_x = 800 + self.width / 2
+        max_y = 600 + self.height / 2
+
+        if self.x < min_x:
+            self.x = max_x
+        elif self.x > max_x:
+            self.x = min_x
+        if self.y < min_y:
+            self.y = max_y
+        elif self.y > max_y:
+            self.y = min_y
+
+    def collides_with(self, other_object):
+        collision_distance = self.width/2 + other_object.width/2
+        actual_distance = util.distance(self.position, other_object.position)
+
+        return (actual_distance <= collision_distance)
+
+
+    def handle_collision_with(self, other_object):
+        if other_object.__class__ == self.__class__:
+            self.dead = False
+        else:
+            self.dead = True
+
+class Hero(PhysicalObject):
+    def __init__(self, start_pos=(20, 200), hero_images=HeroImages(), *args, **kwargs):
+        super().__init__(img=hero_images.face_down, x=start_pos[0], y=start_pos[1], *args, **kwargs)
+        self.hero_images = hero_images
+        
         self.speed = 2
 
         self.character_keys = dict(up=False, down=False, 
@@ -77,30 +128,30 @@ class Hero:
             self.speed = 2
 
         if self.character_keys['up']:
-            if self.character.image != self.character_walk_up_ani:
-                self.character.image = self.character_walk_up_ani
-            self.character.y += self.speed
+            if self.image != self.hero_images.walk_up:
+                self.image = self.hero_images.walk_up
+            self.y += self.speed
         elif self.character_keys['down']:
-            if self.character.image != self.character_walk_down_ani:
-                self.character.image = self.character_walk_down_ani
-            self.character.y -= self.speed
+            if self.image != self.hero_images.walk_down:
+                self.image = self.hero_images.walk_down
+            self.y -= self.speed
         elif self.character_keys['left']:
-            if self.character.image != self.character_walk_left_ani:
-                self.character.image = self.character_walk_left_ani
-            self.character.x -= self.speed
+            if self.image != self.hero_images.walk_left:
+                self.image = self.hero_images.walk_left
+            self.x -= self.speed
         elif self.character_keys['right']:
-            if self.character.image != self.character_walk_right_ani:
-                self.character.image = self.character_walk_right_ani
-            self.character.x += self.speed
+            if self.image != self.hero_images.walk_right:
+                self.image = self.hero_images.walk_right
+            self.x += self.speed
         else:
-            if self.character.image == self.character_walk_up_ani:
-                self.character.image = resources.character_seq_face_up
-            elif self.character.image == self.character_walk_down_ani:
-                self.character.image = resources.character_seq_face_down
-            elif self.character.image == self.character_walk_left_ani:
-                self.character.image = resources.character_seq_face_left
-            elif self.character.image == self.character_walk_right_ani:
-                self.character.image = resources.character_seq_face_right
+            if self.image == self.hero_images.walk_up:
+                self.image = self.hero_images.face_up
+            elif self.image == self.hero_images.walk_down:
+                self.image = self.hero_images.face_down
+            elif self.image == self.hero_images.walk_left:
+                self.image = self.hero_images.face_left
+            elif self.image == self.hero_images.walk_right:
+                self.image = self.hero_images.face_right
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.UP:
