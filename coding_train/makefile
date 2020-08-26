@@ -1,3 +1,7 @@
+.PHONY: random-vector-generator
+random-vector-generator:
+	python3 random_vector_generator.py
+
 .PHONY: walker-class
 walker-class:
 	python3 walker/main.py
