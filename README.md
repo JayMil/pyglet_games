@@ -7,5 +7,8 @@ https://pyglet.readthedocs.io/en/latest/programming_guide/examplegame.html#progr
 ## intro
 Examples from going through API documentaion
 
+## Coding Train
+Examples from the Coding Train YouTube series
+
 ## pyglet
 Pyglet repo for example projects and references
