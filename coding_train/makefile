@@ -1,3 +1,7 @@
+.PHONY: walker-class
+walker-class:
+	python3 walker/main.py
+
 .PHONY: walker-with-vector
 walker-with-vector:
 	python3 walker-with-vector.py
