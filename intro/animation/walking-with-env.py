@@ -1,9 +1,13 @@
 import pyglet
 from pyglet.window import key
+import math
 import resources
 
+# Show bounding boxes
+DEBUG = False
 
 class Game:
+    ''' Main Game Object to handle overall game logic '''
     def __init__(self, window):
         self.window = window
 
@@ -11,17 +15,54 @@ class Game:
 
         self.create_background()
         self.create_labels()
-        self.hero = Hero(start_pos=(40, self.window.height-100), batch=self.main_batch)
+        self.hero = Hero(start_pos=(40, self.window.height-100),
+                        window_width=self.window.width, window_height=self.window.height,
+                        batch=self.main_batch)
         self.window.push_handlers(self)
         self.window.push_handlers(self.hero)
 
+        self.enviornment_objs = self.create_enviornment_bounds()
+
+    def create_enviornment_bounds(self):
+        ''' Create bounding boxes for enviornment background '''
+        objs = []
+
+        hole = CollisionObject(25, 420, 60, 50, self.window.width, self.window.height)
+        top_group1 = CollisionObject(155, 440, 180, 135, self.window.width, self.window.height)
+        top_group1_1 = CollisionObject(185, 410, 70, 45, self.window.width, self.window.height)
+        top_group2 = CollisionObject(345, 490, 100, 85, self.window.width, self.window.height)
+        top_group3 = CollisionObject(415, 450, 150, 85, self.window.width, self.window.height)
+        top_group4 = CollisionObject(575, 490, 60, 85, self.window.width, self.window.height)
+        top_group5 = CollisionObject(635, 440, 60, 85, self.window.width, self.window.height)
+        right_group1 = CollisionObject(700, 50, 60, 385, self.window.width, self.window.height)
+        water1 = CollisionObject(0, 240, 535, 75, self.window.width, self.window.height)
+        water2 = CollisionObject(460, 100, 75, 145, self.window.width, self.window.height)
+        water3 = CollisionObject(460, 0, 75, 35, self.window.width, self.window.height)
+        
+        objs.append(hole)
+        objs.append(top_group1)
+        objs.append(top_group1_1)
+        objs.append(top_group2)
+        objs.append(top_group3)
+        objs.append(top_group4)
+        objs.append(top_group5)
+        objs.append(right_group1)
+        objs.append(water1)
+        objs.append(water2)
+        objs.append(water3)
+
+
+        return objs
+
     def create_background(self):
+        ''' Create sprite for the background image '''
         self.bg = pyglet.sprite.Sprite(img=resources.background_image, 
                                 batch=self.main_batch,
                                 x=self.window.width//2, y=self.window.height//2)
 
     def create_labels(self):
-        pyglet.text.Label('Walking Example',
+        # labels not showing...
+        self.title = pyglet.text.Label('Walking Example',
                                     font_name='Times New Roman',
                                     font_size=24,
                                     x=self.window.width//2, y=self.window.height-30,
@@ -40,13 +81,50 @@ class Game:
                                     x=20, y=self.window.height-90,
                                     batch=self.main_batch)
 
+    def handle_enviornment_collisions(self):
+        """ Detect and handle collisions with hero and enviornment"""
+        for obj in self.enviornment_objs:
+            if obj.collides_with(self.hero.hit_box):
+                if self.hero.is_moving_up():
+                    self.hero.hit_box.y -= self.hero.speed
+                elif self.hero.is_moving_down():
+                    self.hero.hit_box.y += self.hero.speed
+                elif self.hero.is_moving_left():
+                    self.hero.hit_box.x += self.hero.speed
+                elif self.hero.is_moving_right():
+                    self.hero.hit_box.x -= self.hero.speed
+                else:
+                    print("Unhandled Collision!")
+
+
+    def draw_env_bounds(self):
+        ''' Show the environment bounds '''
+        for obj in self.enviornment_objs:
+            rectangle = pyglet.shapes.Rectangle(obj.x, obj.y, obj.width, obj.height, color=(0, 0, 255))
+            rectangle.opacity = 150
+            rectangle.draw()
+
+
     def draw(self):
+        ''' Main draw method '''
         self.window.clear()
-        self.bg.draw()
+        self.bg.draw()          # batch not working for drawing background... have to manually draw
+        self.title.draw()       # drawing labels is not working...
         self.main_batch.draw()
+
+        # DEBUG
+        if DEBUG:
+            self.draw_env_bounds()
+
+            # draw player pos dot
+            rectangle = pyglet.shapes.Rectangle(self.hero.hit_box.x, self.hero.hit_box.y, self.hero.hit_box.width, self.hero.hit_box.height, color=(255, 0, 0))
+            rectangle.opacity = 125
+            rectangle.draw()
+
 
     def update(self, dt):
         self.hero.update(dt)
+        self.handle_enviornment_collisions()
 
     def on_key_press(self, symbol, modifiers):
         pass
@@ -67,53 +145,54 @@ class HeroImages():
         self.face_left = resources.character_seq_face_left
         self.face_right = resources.character_seq_face_right
 
-
-class PhysicalObject(pyglet.sprite.Sprite):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.velocity_x, self.velocity_y = 0.0, 0.0
-        self.dead = False
-
-        self.new_objects = []
-
-    def update(self, dt):
-        self.x += self.velocity_x * dt
-        self.y += self.velocity_y * dt
-        self.check_bounds()
-
-    def check_bounds(self):
-        min_x = -self.width / 2
-        min_y = -self.height / 2
-        max_x = 800 + self.width / 2
-        max_y = 600 + self.height / 2
-
-        if self.x < min_x:
-            self.x = max_x
-        elif self.x > max_x:
-            self.x = min_x
-        if self.y < min_y:
-            self.y = max_y
-        elif self.y > max_y:
-            self.y = min_y
+class CollisionObject(object):
+    ''' Rectangular collision object
+        Used for calculating collisions between objects
+    '''
+    def __init__(self, x, y, width, height, window_width, window_height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.window_width = window_width
+        self.window_height = window_height
+        self.position = (self.x, self.y)
 
     def collides_with(self, other_object):
-        collision_distance = self.width/2 + other_object.width/2
-        actual_distance = util.distance(self.position, other_object.position)
+        # rectangle collision
+        x1 = self.x
+        y1 = self.y
+        x2 = other_object.x
+        y2 = other_object.y
 
-        return (actual_distance <= collision_distance)
-
-
-    def handle_collision_with(self, other_object):
-        if other_object.__class__ == self.__class__:
-            self.dead = False
+        if (x1 < x2 + other_object.width and
+           x1 + self.width > x2 and
+           y1 < y2 + other_object.height and
+           y1 + self.height > y2):
+            return True
         else:
-            self.dead = True
+            return False
 
-class Hero(PhysicalObject):
+
+class PhysicalSpriteObject(pyglet.sprite.Sprite):
+    ''' A physical sprite object '''
+    def __init__(self, window_width, window_height, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.window_width = window_width
+        self.window_height = window_height
+        self.velocity_x, self.velocity_y = 0.0, 0.0
+        self.hit_box = CollisionObject(self.x, self.y, self.width, self.height, self.window_width, self.window_height)
+
+
+class Hero(PhysicalSpriteObject):
+    ''' Hero Sprite Class '''
     def __init__(self, start_pos=(20, 200), hero_images=HeroImages(), *args, **kwargs):
         super().__init__(img=hero_images.face_down, x=start_pos[0], y=start_pos[1], *args, **kwargs)
         self.hero_images = hero_images
+
+        # adjust hit box height
+        self.hit_box.height -= 55
         
         self.speed = 2
 
@@ -121,29 +200,42 @@ class Hero(PhysicalObject):
                                     left=False, right=False,
                                     fast=False)
 
+    def is_moving_up(self):
+        return self.character_keys['up']
+
+    def is_moving_down(self):
+        return self.character_keys['down']
+
+    def is_moving_left(self):
+        return self.character_keys['left']
+
+    def is_moving_right(self):
+        return self.character_keys['right']
+
     def update(self, dt):
         if self.character_keys['fast']:
             self.speed = 4
         else:
             self.speed = 2
 
-        if self.character_keys['up']:
+        if self.is_moving_up():
             if self.image != self.hero_images.walk_up:
                 self.image = self.hero_images.walk_up
-            self.y += self.speed
-        elif self.character_keys['down']:
+            self.hit_box.y += self.speed
+        elif self.is_moving_down():
             if self.image != self.hero_images.walk_down:
                 self.image = self.hero_images.walk_down
-            self.y -= self.speed
-        elif self.character_keys['left']:
+            self.hit_box.y -= self.speed
+        elif self.is_moving_left():
             if self.image != self.hero_images.walk_left:
                 self.image = self.hero_images.walk_left
-            self.x -= self.speed
-        elif self.character_keys['right']:
+            self.hit_box.x -= self.speed
+        elif self.is_moving_right():
             if self.image != self.hero_images.walk_right:
                 self.image = self.hero_images.walk_right
-            self.x += self.speed
+            self.hit_box.x += self.speed
         else:
+            # if not moving, set to still image
             if self.image == self.hero_images.walk_up:
                 self.image = self.hero_images.face_up
             elif self.image == self.hero_images.walk_down:
@@ -152,6 +244,24 @@ class Hero(PhysicalObject):
                 self.image = self.hero_images.face_left
             elif self.image == self.hero_images.walk_right:
                 self.image = self.hero_images.face_right
+
+        # prevent going out of border
+        min_x = 0
+        min_y = 0
+        max_x = self.window_width
+        max_y = self.window_height
+
+        if self.hit_box.x < min_x:
+            self.hit_box.x = min_x
+        elif (self.hit_box.x+self.hit_box.width) > max_x:
+            self.hit_box.x = (max_x - self.hit_box.width)
+        if self.hit_box.y < min_y:
+            self.hit_box.y = min_y
+        elif (self.hit_box.y+self.hit_box.height) > max_y:
+            self.hit_box.y = (max_y - self.hit_box.height)
+
+        self.x = self.hit_box.x
+        self.y = self.hit_box.y
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.UP:
