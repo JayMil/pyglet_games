@@ -1,3 +1,7 @@
+.PHONY: mouse-mover
+mouse-mover:
+	python3 mouse_mover/main.py
+
 .PHONY: mover
 mover:
 	python3 mover/main.py
