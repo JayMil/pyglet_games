@@ -1,3 +1,7 @@
+.PHONY: vector_mouse
+vector_mouse:
+	python3 vector_mouse.py
+
 .PHONY: random-vector-generator
 random-vector-generator:
 	python3 random_vector_generator.py
