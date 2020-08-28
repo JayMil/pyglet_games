@@ -1,3 +1,7 @@
+.PHONY: force-mass-mover
+force-mass-mover:
+	python3 force_mass_mover/main.py
+
 .PHONY: force-mover
 force-mover:
 	python3 force_mover/main.py
