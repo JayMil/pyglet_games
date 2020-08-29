@@ -1,0 +1,102 @@
+
+Fart man - bean collecting farting platformer
+
+Timed adventure in space
+* groundhog style game
+
+Restaurant serving customers - top down view. 
+* Score points for money and customer reviews
+* Customer reviews based on speed and accuracy 
+
+
+
+Theme
+Game play
+Winning
+
+
+Blast boots
+Theme: Man with rocket boots. Flys around levels.
+Gameplay: Flys around levels. Moves in compass - moving with boots moves in opposite dirction fast and damages enemies
+Win: Reach end of level. Goal
+
+Combat Typing Game
+Theme: Adventure game where you type the letter(s) on enemies to destroy them
+Gameplay: Typing combat. Move with home row keys a subset of keys are used for fighting
+Win: Defeat minions, then boss. 
+
+
+Snowman Combat Game
+Theme: Snowman fighting something
+Gamplay: 2d platformer in neighborhood. Shoot carrots, Life determined by number of balls
+Win: Defeat wave of enimeis
+
+
+Stuffed Animals Protecting Girl
+Theme: Stuff animals protect girl from nightmare minions
+Gamplay: Overview - fight with small objects
+Win: Defeat wave of enimeise
+
+
+1: Combat Typing
+* 2: Timed Adventure In space
+3: Insane Asylum
+4: Druggy
+5: Arcade
+6: City Major
+7: Fart man
+8: Stuffed animals 
+
+
+Timed Adventure in Space
+* Wake up from container or room
+* Table with aliens
+* Sea space
+* Solve puzzes before crash
+* Alien space craft is trying to destroy
+* Given basic tasks to complete
+* Given time to get back to cryo sleep
+* If you don't make it back leave a dead body
+
+The Twist
+1. You're pregnant with an alien
+2. You're infected
+3. You're a robot
+4. Everyone hates you
+5. You are not in space
+6. you are dreaming
+7. Everyone is dead but you
+
+
+
+
+
+* You are the bad guy
+* Your reality is a lie
+* Your an alien slave
+* Aliens are experimenting on you
+
+
+You are dead
+you are a clone
+You are abducting humans
+You're in a simulation
+You are not in space
+You are dreaming
+You are dealing with the death of your parents
+You live in an orphanage
+You are collecting human slaves
+you are part of an intergalactic space crime syndicate
+You're a janitor
+
+
+you're an alien
+you're infected
+you're pregnant with alien
+ship is infected
+everyone is dead but you
+you're robot
+Everyone hates you
+
+
+

@@ -1,3 +1,7 @@
+.PHONY: friction-mover
+friction-mover:
+	python3 friction_mover/main.py
+
 .PHONY: force-mass-mover
 force-mass-mover:
 	python3 force_mass_mover/main.py
