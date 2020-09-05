@@ -1,3 +1,7 @@
+.PHONY: drag-force-mover
+drag-force-mover:
+	python3 drag_force_mover/main.py
+
 .PHONY: friction-mover
 friction-mover:
 	python3 friction_mover/main.py
