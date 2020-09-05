@@ -1,0 +1,52 @@
+
+Glitch game
+===========
+
+Glitch Mechanics
+-
+* death == you are glitched
+* Glitch traps that reset you to last save point
+* Glitch move to move to a position a spefic distantance away - collision with
+      objects kills you.
+* Glitch jump up walls
+* Glitching enemies
+* Glitches are caused by a virus
+* Glitch holes - rip off portal
+* Things are glitch becuase they were not initialized properly
+    - to fix glitches you must re-initialize them by
+        * killing them (enemies)
+        * altering they're properties
+            - How to access game properties
+* Game development termenolgy for normal mechanics
+    - Learn how to code and can access the code
+    - Changes to the code can be made, but don't apply til you restart the game
+        - Or scripts are like spells that you can cast
+    - Ability to code is abstracted into "scripts"
+    - Scripts can be found through out the world in specific glitches
+    - Script examples
+        * Scritp to alter speed of specific enemies
+        * script to do extra damage
+        * script to cross water
+        * 
+    - How to prevent scripts from being OP
+    - Hack - alter speed
+* Glitches are color coded by what type of glitch they are
+
+* Duplicate item chest
+    - adding coins to chest duplicates items
+
+---------
+top ideas
+---------
+1. Glitch colors
+2. Glitch scripts as live changes
+    3. Glitch holes
+3. Glitched speech bubbles
+4. Glitched enemies are camouflaged
+5. Negative Glitch Effects
+    * keys get switched (but are displayed to the user)
+6. Combine scripts with items to give glitched properties
+    - give healing sword -10 healing to do 10 damage instead..
+7. Glitch wold indicators
+    - When you die the game says it crashed
+    - Level listed as -1
