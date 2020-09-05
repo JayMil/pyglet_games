@@ -1,18 +1,20 @@
 import random
 import math
 from pyglet.shapes import Circle
+
 import vector
 from vector import X, Y
+import enviornment as env
+
+SIZE_SCALE = 20
 
 class Mover:
     ''' Circle to move randomly around screen '''
     def __init__(self, x, y, window, mass=1, radius=16):
-        self.radius = math.sqrt(mass) * 10
+        self.radius = math.sqrt(mass) * SIZE_SCALE
         self.window = window
 
         self.pos = vector.createVector(x, y+self.radius)    # bottom edge at pos?
-        #self.pos = vector.createVector(x, y)                # center pos
-        #self.vel = vector.createRandomNormalizedVector(random.randrange(3) + 1)    # random velocity
         self.vel = vector.createVector(0, 0)
         self.acc = vector.createVector(0, 0)
         self.mass = mass
@@ -27,34 +29,44 @@ class Mover:
             friction = vector.normalize(self.vel)
             friction *= -1
 
-            mu = 0.1
             normal = self.mass
-            friction = vector.withMag(friction, mu * normal)
+            friction = vector.withMag(friction, env.MU * normal)
             self.applyForce(friction)
 
 
     def handleEdgeCollision(self):
         ''' Handle collision with walls '''
+
+        # collide with bottom
         if self.pos[Y] <=  self.radius:
             self.pos[Y] =  self.radius
             self.vel[Y] *= -1
 
-        if self.pos[X] <= 0 + self.radius:
-            self.pos[X] = 0 + self.radius
+        # collide with left wall
+        if self.pos[X] <= self.radius:
+            self.pos[X] = self.radius
             self.vel[X] *= -1
+        # collide with right wall
         elif self.pos[X] >= self.window.width - self.radius:
             self.pos[X] = self.window.width - self.radius
             self.vel[X] *= -1
 
     def update(self, dt):
+        if self.mouse['pressed']:
+            self.applyForce(env.WIND)
+
+        weight = self.mass * env.GRAVITY
+        self.applyForce(weight)
+
+        self.friction()
+        self.handleEdgeCollision()
 
         self.vel += self.acc
-        #self.vel = vector.limit(self.vel, 3)
         self.pos += self.vel
         self.acc = vector.createVector(0, 0)
 
     def draw(self):
-        c = Circle(self.pos[X], self.pos[Y], (self.radius*2))
+        c = Circle(self.pos[X], self.pos[Y], self.radius)
         c.draw()
 
     def on_mouse_motion(self, x, y, dx, dy):
