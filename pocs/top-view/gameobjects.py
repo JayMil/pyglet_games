@@ -40,3 +40,16 @@ class PhysicalSpriteObject(pyglet.sprite.Sprite):
         self.velocity_x, self.velocity_y = 0.0, 0.0
         self.hit_box = CollisionObject(self.x, self.y, self.width, self.height, self.window_width, self.window_height)
 
+class GameEnviornment():
+    ''' A game enviornment - menu screen - level - etc.. '''
+    def __init__(self, window):
+        self.window = window
+        self.batch = pyglet.graphics.Batch()
+
+    def draw(self):
+        self.batch.draw()
+
+    def update(self):
+        pass
+
+        
