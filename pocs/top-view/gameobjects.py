@@ -42,7 +42,8 @@ class PhysicalSpriteObject(pyglet.sprite.Sprite):
 
 class GameEnviornment():
     ''' A game enviornment - menu screen - level - etc.. '''
-    def __init__(self, window):
+    def __init__(self, name, window):
+        self.name = name
         self.window = window
         self.batch = pyglet.graphics.Batch()
 

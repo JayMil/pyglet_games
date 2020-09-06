@@ -10,7 +10,7 @@ class Hero(PhysicalSpriteObject):
         self.hero_images = hero_images
 
         # adjust hit box height
-        print(self.height)
+        #print(self.height)
         self.hit_box.height -= 55
         
         self.speed = 2

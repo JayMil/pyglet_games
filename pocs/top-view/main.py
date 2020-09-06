@@ -1,4 +1,5 @@
 import pyglet
+from pyglet.window import key
 import math
 import resources
 
@@ -12,22 +13,29 @@ class GameController:
     ''' Main Game Object to handle overall game logic '''
     def __init__(self, window):
         self.window = window
-        self.active_env = menu.MainMenu(self.start_game, self.exit, window)
+        self.active_env = None
+        self.menu_env = menu.MainMenu(self.start_game, self.exit, window)
+        self.level_env = game.Level(self.start_menu, self.window)
+        self.start_menu()
+
+    def start_menu(self):
+        self.window.remove_handlers(self.active_env)
+        self.active_env = self.menu_env
         self.window.push_handlers(self.active_env)
 
     def start_game(self):
-        #self.window.pop_handlers()     # remove current handlers?
-        self.active_env = game.Level(self.window)
+        self.window.remove_handlers(self.active_env)
+        self.active_env = self.level_env
         self.window.push_handlers(self.active_env)
 
     def exit(self):
         pyglet.app.exit()
-        #pyglet.app.EventLoop().exit()
 
     def draw(self):
         ''' Main draw method '''
         self.window.clear()
-        self.active_env.draw()
+        if self.active_env:
+            self.active_env.draw()
 
         '''
         # DEBUG
@@ -42,7 +50,8 @@ class GameController:
         '''
 
     def update(self, dt):
-        self.active_env.update(dt)
+        if self.active_env:
+            self.active_env.update(dt)
 
     
 # 21 x 15

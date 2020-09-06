@@ -9,7 +9,7 @@ OPTIONS = 2
 
 class MainMenu(GameEnviornment):
     def __init__(self, on_start_game, on_exit, window):
-        super().__init__(window)
+        super().__init__("Main Menu", window)
 
         # functions to call when finished
         self.on_start_game = on_start_game
@@ -42,8 +42,10 @@ class MainMenu(GameEnviornment):
         if (self.finished):
             if self.active_item == START_GAME:
                 self.on_start_game()
+                self.finished = False
             else:
                 self.on_exit()
+                self.finished = False
 
 
     def on_key_press(self, symbol, modifiers):

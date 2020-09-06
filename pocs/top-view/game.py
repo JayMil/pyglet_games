@@ -6,8 +6,10 @@ from gameobjects import CollisionObject
 from hero import Hero
 
 class Level(GameEnviornment):
-    def __init__(self, window):
-        super().__init__(window)
+    def __init__(self, on_exit, window):
+        super().__init__("Level", window)
+
+        self.on_exit = on_exit
 
         self.bg_group = pyglet.graphics.OrderedGroup(0)
         self.fg_group = pyglet.graphics.OrderedGroup(1)
@@ -20,39 +22,8 @@ class Level(GameEnviornment):
         self.window.push_handlers(self.hero)
 
         self.create_background()
-        #self.grid = self.generate_grid(21, 15)
         #self.enviornment_objs = self.create_enviornment_bounds()
 
-
-    def generate_grid(self, width, height):
-        x = 0
-        y = 0
-        color=(100, 100, 100)
-        grid = []
-        for w in range(width):
-            grid.append([])
-            for h in range(height):
-                #grid[w].append(CollisionObject(x+50, y, 50, 50, self.window.width, self.window.height))
-                # set corners to different colors r, g, b, y
-                if h == 0 and w == 0:
-                    color = (255, 0, 0)
-                elif h == 0 and w == width-1:
-                    color = (0, 255, 0)
-                elif h == height-1 and w == 0:
-                    color = (0, 0, 255)
-                elif h == height-1 and w == width-1:
-                    color = (255, 255, 0)
-
-                grid[w].append(pyglet.shapes.Rectangle(x, y, 50, 50, color=color,
-                                                    batch=self.batch, group=self.bg_group))
-                y += 50
-                color=(100, 100, 100)
-
-            y = 0
-            x += 50
-
-
-        return grid
 
     def create_enviornment_bounds(self):
         ''' Create bounding boxes for enviornment background '''
@@ -114,6 +85,12 @@ class Level(GameEnviornment):
                                     x=20, y=self.window.height-90,
                                     batch=self.batch, group=self.fg_group)
 
+        pyglet.text.Label("Press 'q' to quit",
+                                    font_name='Times New Roman',
+                                    font_size=16,
+                                    x=20, y=self.window.height-120,
+                                    batch=self.batch, group=self.fg_group)
+
     def handle_enviornment_collisions(self):
         """ Detect and handle collisions with hero and enviornment"""
         for obj in self.enviornment_objs:
@@ -136,16 +113,10 @@ class Level(GameEnviornment):
             rectangle.opacity = 150
             rectangle.draw()
 
-    def draw_background(self):
-        for row in self.grid:
-            for cell in self.grid[row]:
-                rectangle = pyglet.shapes.Rectangle(cell.x, cell.y, cell.width, cell.height, color=cell.color,
-                                                    batch=self.batch, group=self.bg_group)
-                rectangle.opacity = 150
-                rectangle.draw()
+    def on_key_press(self, symbol, modifiers):
+        if symbol == key.Q:
+            self.on_exit()
 
     def update(self, dt):
         self.hero.update(dt)
-
-
 
