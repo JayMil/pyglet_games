@@ -37,18 +37,6 @@ class GameController:
         if self.active_env:
             self.active_env.draw()
 
-        '''
-        # DEBUG
-        if DEBUG:
-            pass
-            #self.draw_env_bounds()
-            # draw player pos dot
-            #height = self.hero.height-14
-            #rectangle = pyglet.shapes.Rectangle(self.hero.hit_box.x, self.hero.hit_box.y, self.hero.width, height, color=(255, 0, 0))
-            #rectangle.opacity = 125
-            #rectangle.draw()
-        '''
-
     def update(self, dt):
         if self.active_env:
             self.active_env.update(dt)
@@ -56,7 +44,7 @@ class GameController:
     
 # 21 x 15
 window = pyglet.window.Window(1080, 768)
-#window = pyglet.window.Window(768, 576)
+window.set_location(400, 50)
 gameController = GameController(window)
 pyglet.clock.schedule_interval(gameController.update, 1/120.0)
 
