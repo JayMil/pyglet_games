@@ -2,6 +2,7 @@ import pyglet
 
 import gameobjects
 from gameobjects import CollisionObject
+from hero import Facing
 
 class Map():
     def __init__(self, window, batch, group):
@@ -61,16 +62,17 @@ class Map():
         """ Detect and handle collisions with object and enviornment"""
         for obj in self.enviornment_objs:
             if obj.collides_with(hero.hit_box):
-                if hero.is_moving_up():
-                    hero.hit_box.y -= hero.speed
-                elif hero.is_moving_down():
-                    hero.hit_box.y += hero.speed
-                elif hero.is_moving_left():
-                    hero.hit_box.x += hero.speed
-                elif hero.is_moving_right():
-                    hero.hit_box.x -= hero.speed
-                else:
-                    print("Unhandled Collision!")
+                if hero.moving:
+                    if hero.facing == Facing.UP:
+                        hero.hit_box.y -= hero.speed
+                    elif hero.facing == Facing.DOWN:
+                        hero.hit_box.y += hero.speed
+                    elif hero.facing == Facing.LEFT:
+                        hero.hit_box.x += hero.speed
+                    elif hero.facing == Facing.RIGHT:
+                        hero.hit_box.x -= hero.speed
+                    else:
+                        print("Unhandled Collision!")
 
     def draw_env_bounds(self):
         ''' Show the environment bounds '''

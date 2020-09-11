@@ -15,15 +15,22 @@ class Level(GameEnviornment):
 
         self.on_exit = on_exit
 
-        self.bg_group = pyglet.graphics.OrderedGroup(0)
-        self.fg_group = pyglet.graphics.OrderedGroup(1)
+        self.backroung_layer = pyglet.graphics.OrderedGroup(0)
+        self.background_overlay_layer = pyglet.graphics.OrderedGroup(1)
+        self.foreground_underlay_layer = pyglet.graphics.OrderedGroup(2)
+        self.foreground_layer = pyglet.graphics.OrderedGroup(3)
+        self.foreground_overlay_layer = pyglet.graphics.OrderedGroup(4)
+        self.fg_overlay_group = pyglet.graphics.OrderedGroup(2)
 
         self.create_labels()
         self.hero = Hero(start_pos=(40, self.window.height-200),
-                        window_width=self.window.width, window_height=self.window.height,
-                        batch=self.batch, group=self.fg_group)
+                        window=self.window, batch=self.batch, 
+                        underlay_group=self.foreground_underlay_layer, 
+                        overlay_group=self.foreground_overlay_layer,
+                        group=self.foreground_layer)
+
         self.window.push_handlers(self.hero)
-        self.map = gamemap.Map(window, self.batch, self.bg_group)
+        self.map = gamemap.Map(window, self.batch, self.backroung_layer)
 
     def create_labels(self):
         ''' Create helper lables '''
@@ -32,26 +39,26 @@ class Level(GameEnviornment):
                                     font_size=24,
                                     x=self.window.width//2, y=self.window.height-30,
                                     anchor_x='center', batch=self.batch,
-                                    group=self.fg_group)
+                                    group=self.foreground_layer)
 
 
         pyglet.text.Label('Move with direction keys',
                                     font_name='Times New Roman',
                                     font_size=16,
                                     x=20, y=self.window.height-60,
-                                    batch=self.batch, group=self.fg_group)
+                                    batch=self.batch, group=self.foreground_layer)
 
         pyglet.text.Label("Move fast with 'f' key",
                                     font_name='Times New Roman',
                                     font_size=16,
                                     x=20, y=self.window.height-90,
-                                    batch=self.batch, group=self.fg_group)
+                                    batch=self.batch, group=self.foreground_layer)
 
         pyglet.text.Label("Press 'q' to quit",
                                     font_name='Times New Roman',
                                     font_size=16,
                                     x=20, y=self.window.height-120,
-                                    batch=self.batch, group=self.fg_group)
+                                    batch=self.batch, group=self.foreground_layer)
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.Q:

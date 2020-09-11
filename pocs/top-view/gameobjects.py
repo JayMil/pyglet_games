@@ -52,13 +52,14 @@ class EnviornmentRect(pyglet.shapes.Rectangle):
 
 class PhysicalSpriteObject(pyglet.sprite.Sprite):
     ''' A physical sprite object '''
-    def __init__(self, window_width, window_height, *args, **kwargs):
+    def __init__(self, window, underlay_group=None, overlay_group=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.window_width = window_width
-        self.window_height = window_height
+        self.window = window
+        self.underlay_group = underlay_group
+        self.overlay_group = overlay_group
         self.velocity_x, self.velocity_y = 0.0, 0.0
-        self.hit_box = CollisionObject(self.x, self.y, self.width, self.height, self.window_width, self.window_height)
+        self.hit_box = CollisionObject(self.x, self.y, self.width, self.height, self.window.width, self.window.height)
 
 class GameEnviornment():
     ''' A game enviornment - menu screen - level - etc.. '''

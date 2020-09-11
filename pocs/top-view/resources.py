@@ -29,6 +29,19 @@ character_seq_face_right = character_seq[61]
 character_seq_walk_left = character_seq[72:74]
 character_seq_face_left = character_seq[73]
 
+slash_image = pyglet.resource.image("weapons_1.png")
+#slash_image_flip = slash_image.get_transform(rotate=180)
+slash_seq = pyglet.image.ImageGrid(slash_image, 7, 5)
+#slash_seq1 = slash_seq[6:10]
+slash_seq1 = slash_seq[6:10]
+
+
+sword_image = pyglet.resource.image("sword.png")
+center_image(sword_image)
+
+sword_image = pyglet.resource.image("sword2.png")
+sword_seq = pyglet.image.ImageGrid(sword_image, 1, 2)
+sword_still = sword_seq[0]
 
 background_image = pyglet.resource.image("fantasy_background1.png")
 #background_image = pyglet.resource.image("asteroid.png")
@@ -46,4 +59,11 @@ class HeroImages():
         self.face_down = character_seq_face_down
         self.face_left = character_seq_face_left
         self.face_right = character_seq_face_right
+
+        self.slash = pyglet.image.Animation.from_image_sequence(slash_seq1, duration=0.05,loop=False)
+
+        #self.sword = sword_image
+        self.sword = pyglet.image.Animation.from_image_sequence(sword_seq, duration=0.1,loop=True)
+        self.sword_still = sword_still
+
 
