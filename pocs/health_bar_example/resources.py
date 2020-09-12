@@ -29,10 +29,30 @@ character_seq_face_right = character_seq[61]
 character_seq_walk_left = character_seq[72:74]
 character_seq_face_left = character_seq[73]
 
+health_bar_container = pyglet.resource.image("health_bar_container.png")
+health_bar_heart = pyglet.resource.image("health_bar_heart.png")
+
+health_potion = pyglet.resource.image("health_potion_small.png")
+
+backpack = backpack = pyglet.resource.image("backpack2.png")
+
+player_dead = pyglet.resource.image("player_dead.png")
 
 
 background_image = pyglet.resource.image("fantasy_background1.png")
 #background_image = pyglet.resource.image("asteroid.png")
 center_image(background_image)
 
+class HeroImages():
+    ''' Image References for Hero Sprite '''
+    def __init__(self):
+        self.walk_up = pyglet.image.Animation.from_image_sequence(character_seq_walk_up, duration=0.1,loop=True)
+        self.walk_down = pyglet.image.Animation.from_image_sequence(character_seq_walk_down, duration=0.1,loop=True)
+        self.walk_left = pyglet.image.Animation.from_image_sequence(character_seq_walk_left, duration=0.1,loop=True)
+        self.walk_right = pyglet.image.Animation.from_image_sequence(character_seq_walk_right, duration=0.1,loop=True)
+
+        self.face_up = character_seq_face_up
+        self.face_down = character_seq_face_down
+        self.face_left = character_seq_face_left
+        self.face_right = character_seq_face_right
 

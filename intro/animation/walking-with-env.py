@@ -4,7 +4,7 @@ import math
 import resources
 
 # Show bounding boxes
-DEBUG = False
+DEBUG = True
 
 class Game:
     ''' Main Game Object to handle overall game logic '''
@@ -112,14 +112,6 @@ class Game:
         self.title.draw()       # drawing labels is not working...
         self.main_batch.draw()
 
-        # DEBUG
-        if DEBUG:
-            self.draw_env_bounds()
-
-            # draw player pos dot
-            rectangle = pyglet.shapes.Rectangle(self.hero.hit_box.x, self.hero.hit_box.y, self.hero.hit_box.width, self.hero.hit_box.height, color=(255, 0, 0))
-            rectangle.opacity = 125
-            rectangle.draw()
 
 
     def update(self, dt):

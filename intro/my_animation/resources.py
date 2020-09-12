@@ -11,6 +11,7 @@ pyglet.resource.reindex()
 
 
 
+
 explosion_image = pyglet.resource.image("small/explosion.png")
 explosion_seq = pyglet.image.ImageGrid(explosion_image, 4, 5)
 explosion_seq1 = explosion_seq[5:9] + explosion_seq[:4]
@@ -29,9 +30,17 @@ character_seq_face_right = character_seq[61]
 character_seq_walk_left = character_seq[72:74]
 character_seq_face_left = character_seq[73]
 
+power_up = pyglet.resource.image("power_up.png")
+box = pyglet.resource.image("box.png")
+switch = pyglet.resource.image("switch.png")
+key = pyglet.resource.image("key.png")
+key_door = pyglet.resource.image("key_door.png")
+win_tile = pyglet.resource.image("win_tile.png")
+
 
 
 background_image = pyglet.resource.image("fantasy_background1.png")
+background_image2 = pyglet.resource.image("fantasy_background2.png")
 #background_image = pyglet.resource.image("asteroid.png")
 center_image(background_image)
 
