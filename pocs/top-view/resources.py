@@ -16,6 +16,10 @@ explosion_seq = pyglet.image.ImageGrid(explosion_image, 4, 5)
 explosion_seq1 = explosion_seq[5:9] + explosion_seq[:4]
 explosion_seq2 = explosion_seq[15:] + explosion_seq[11:14]
 
+crystal1 = pyglet.resource.image("crystal1.png")
+crystal2 = pyglet.resource.image("crystal2.png")
+crystal3 = pyglet.resource.image("crystal3.png")
+
 size = "medium"
 
 character_image = pyglet.resource.image(f"{size}/character1.png")
@@ -37,11 +41,29 @@ slash_seq1 = slash_seq[6:10]
 
 
 sword_image = pyglet.resource.image("sword.png")
+sword_image_blue = pyglet.resource.image("sword_blue.png")
+sword_image_gold = pyglet.resource.image("sword_gold.png")
+sword_image_pink = pyglet.resource.image("sword_pink.png")
+
+
+
 center_image(sword_image)
 
 sword_image = pyglet.resource.image("sword2.png")
+sword_image_blue = pyglet.resource.image("sword2_blue.png")
+sword_image_gold = pyglet.resource.image("sword2_gold.png")
+sword_image_pink = pyglet.resource.image("sword2_pink.png")
+
+
 sword_seq = pyglet.image.ImageGrid(sword_image, 1, 2)
+sword_seq_blue = pyglet.image.ImageGrid(sword_image_blue, 1, 2)
+sword_seq_gold = pyglet.image.ImageGrid(sword_image_gold, 1, 2)
+sword_seq_pink = pyglet.image.ImageGrid(sword_image_pink, 1, 2)
+
 sword_still = sword_seq[0]
+sword_still_blue = sword_seq_blue[0]
+sword_still_gold = sword_seq_gold[0]
+sword_still_pink = sword_seq_pink[0]
 
 background_image = pyglet.resource.image("fantasy_background1.png")
 #background_image = pyglet.resource.image("asteroid.png")
@@ -64,6 +86,12 @@ class HeroImages():
 
         #self.sword = sword_image
         self.sword = pyglet.image.Animation.from_image_sequence(sword_seq, duration=0.1,loop=True)
-        self.sword_still = sword_still
+        self.sword_blue = pyglet.image.Animation.from_image_sequence(sword_seq_blue, duration=0.1,loop=True)
+        self.sword_gold = pyglet.image.Animation.from_image_sequence(sword_seq_gold, duration=0.1,loop=True)
+        self.sword_pink = pyglet.image.Animation.from_image_sequence(sword_seq_pink, duration=0.1,loop=True)
 
+        self.sword_still = sword_still
+        self.sword_still_blue = sword_still_blue
+        self.sword_still_gold = sword_still_gold
+        self.sword_still_pink = sword_still_pink
 

@@ -23,14 +23,15 @@ class Level(GameEnviornment):
         self.fg_overlay_group = pyglet.graphics.OrderedGroup(2)
 
         self.create_labels()
-        self.hero = Hero(start_pos=(40, self.window.height-200),
+        self.map = gamemap.Map(window, self.batch, self.backroung_layer, self.background_overlay_layer)
+        self.hero = Hero(handle_sword_collisions=self.map.handle_sword_collisions, start_pos=(40, self.window.height-200), 
                         window=self.window, batch=self.batch, 
                         underlay_group=self.foreground_underlay_layer, 
                         overlay_group=self.foreground_overlay_layer,
                         group=self.foreground_layer)
 
         self.window.push_handlers(self.hero)
-        self.map = gamemap.Map(window, self.batch, self.backroung_layer)
+
 
     def create_labels(self):
         ''' Create helper lables '''

@@ -2,21 +2,39 @@ import pyglet
 
 import gameobjects
 from gameobjects import CollisionObject
+from gameobjects import CrystalObject
 from hero import Facing
+import resources
 
 class Map():
-    def __init__(self, window, batch, group):
+    def __init__(self, window, batch, group, group2):
         self.window = window
         self.batch = batch
         self.group = group
+        self.group2 = group2
         self.create_background()
         self.enviornment_objs = self.create_enviornment()
 
 
     def create_enviornment(self):
-        goalbox = gameobjects.box(400, 400, 100, 10, self.window, self.batch, self.group)
 
-        return goalbox
+        objs = []
+        # goalbox = gameobjects.box(400, 400, 100, 10, self.window, self.batch, self.group)
+
+        crystal1 = gameobjects.CrystalObject(1, window=self.window, image=resources.crystal1, start_pos=(480, 512), batch=self.batch, group=self.group2)
+        crystal2 = gameobjects.CrystalObject(2, window=self.window, image=resources.crystal2, start_pos=(320, 512), batch=self.batch, group=self.group2)
+        crystal3 = gameobjects.CrystalObject(3, window=self.window, image=resources.crystal3, start_pos=(640, 512), batch=self.batch, group=self.group2)
+
+        objs.append(crystal1)
+
+        objs.append(crystal2)
+
+        objs.append(crystal3)
+        # objs.append(goalbox)
+
+
+
+        return objs
 
 
     def create_enviornment_bounds(self):
@@ -62,17 +80,28 @@ class Map():
         """ Detect and handle collisions with object and enviornment"""
         for obj in self.enviornment_objs:
             if obj.collides_with(hero.hit_box):
-                if hero.moving:
-                    if hero.facing == Facing.UP:
-                        hero.hit_box.y -= hero.speed
-                    elif hero.facing == Facing.DOWN:
-                        hero.hit_box.y += hero.speed
-                    elif hero.facing == Facing.LEFT:
-                        hero.hit_box.x += hero.speed
-                    elif hero.facing == Facing.RIGHT:
-                        hero.hit_box.x -= hero.speed
-                    else:
-                        print("Unhandled Collision!")
+                if type(obj) is CrystalObject:
+                    if hero.moving:
+                        if hero.facing == Facing.UP:
+                            hero.hit_box.y -= hero.speed
+                        elif hero.facing == Facing.DOWN:
+                            hero.hit_box.y += hero.speed
+                        elif hero.facing == Facing.LEFT:
+                            hero.hit_box.x += hero.speed
+                        elif hero.facing == Facing.RIGHT:
+                            hero.hit_box.x -= hero.speed
+                        else:
+                            print("Unhandled Collision!")
+
+
+    def handle_sword_collisions(self, slash):
+        """ Detect and handle collisions with sword and environment"""
+        for obj in self.enviornment_objs:
+            if type(obj) is CrystalObject:
+                if obj.collides_with(slash):
+                    return (obj.crystal_num)
+
+        return 0
 
     def draw_env_bounds(self):
         ''' Show the environment bounds '''

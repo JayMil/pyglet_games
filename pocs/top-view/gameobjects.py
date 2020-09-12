@@ -61,6 +61,28 @@ class PhysicalSpriteObject(pyglet.sprite.Sprite):
         self.velocity_x, self.velocity_y = 0.0, 0.0
         self.hit_box = CollisionObject(self.x, self.y, self.width, self.height, self.window.width, self.window.height)
 
+class CrystalObject(PhysicalSpriteObject):
+    ''' Potion Sprite Class '''
+    def __init__(self, crystal_num, window, image, start_pos, *args, **kwargs):
+        super().__init__(window=window, img=image, x=start_pos[0], y=start_pos[1], *args, **kwargs)
+
+        self.crystal_num = crystal_num
+
+    def collides_with(self, other_object):
+        # rectangle collision
+        x1 = self.x
+        y1 = self.y
+        x2 = other_object.x
+        y2 = other_object.y
+
+        if (x1 < x2 + other_object.width and
+           x1 + self.width > x2 and
+           y1 < y2 + other_object.height and
+           y1 + self.height > y2):
+            return True
+        else:
+            return False
+
 class GameEnviornment():
     ''' A game enviornment - menu screen - level - etc.. '''
     def __init__(self, name, window):

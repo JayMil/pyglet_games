@@ -5,26 +5,31 @@ from pyglet.window import key
 import resources
 from gameobjects import PhysicalSpriteObject
 
+
+
 HERO_IMAGES = resources.HeroImages()
 
 class Hero(PhysicalSpriteObject):
     ''' Hero Sprite Class '''
-    def __init__(self, start_pos=(20, 200), *args, **kwargs):
+    def __init__(self,handle_sword_collisions, start_pos=(20, 200), *args, **kwargs):
         super().__init__(img=HERO_IMAGES.face_down, x=start_pos[0], y=start_pos[1], *args, **kwargs)
 
         self.facing = Facing.DOWN
         self.moving = []
+
+        self.handle_sword_collisions = handle_sword_collisions
 
         self.sword = Sword(self, self.batch, self.underlay_group, self.overlay_group)
         self.window.push_handlers(self.sword)
 
 
         # adjust hit box height
-        #print(self.height)
+        # print(self.height)
         self.hit_box.height -= 55
         
         self.speed = 2
         self.fast = False
+
 
 
     def update(self, dt):
@@ -128,6 +133,8 @@ class Sword():
         self.parent = parent
         self.facing = parent.facing
         self.moving = parent.moving
+        self.sword_moving_image = HERO_IMAGES.sword
+        self.sword_still_image = HERO_IMAGES.sword_still
 
         self.slash = None
 
@@ -139,7 +146,7 @@ class Sword():
                                             batch=batch, group=underlay_group, 
                                             x=parent.x, y=parent.y)
 
-
+        self.sword_power_up = 0
         self.sword_down()
 
     def update(self, dt, moving, facing, xdiff, ydiff):
@@ -157,8 +164,8 @@ class Sword():
                     self.sword_right()
         else:
             # if not moving, set to still image
-            self.sword_under.image = HERO_IMAGES.sword_still
-            self.sword_over.image = HERO_IMAGES.sword_still
+            self.sword_under.image = self.sword_still_image
+            self.sword_over.image = self.sword_still_image
 
 
         if self.facing == Facing.RIGHT or self.facing == Facing.DOWN:
@@ -176,12 +183,18 @@ class Sword():
             self.slash.x -= xdiff
             self.slash.y -= ydiff
 
+        if self.sword_power_up > 0:
+            self.sword_power_up -= 1
+            if self.sword_power_up == 0:
+                self.sword_moving_image = HERO_IMAGES.sword
+                self.sword_still_image = HERO_IMAGES.sword_still
+
 
 
     def sword_down(self):
         self.sword_over.opacity = 255
         self.sword_under.visibile = 0
-        self.sword_over.image = HERO_IMAGES.sword
+        self.sword_over.image = self.sword_moving_image
         self.sword_over.x = self.parent.x+self.parent.width-18
         self.sword_over.y = self.parent.y+(self.parent.height//2)
         self.sword_over.scale = 0.50
@@ -190,7 +203,7 @@ class Sword():
     def sword_up(self):
         self.sword_over.opacity = 0
         self.sword_under.opacity = 255
-        self.sword_under.image = HERO_IMAGES.sword
+        self.sword_under.image = self.sword_moving_image
         self.sword_under.x = self.parent.x-20
         self.sword_under.y = self.parent.y+(self.parent.height//4)-2
         self.sword_under.scale = 0.5
@@ -199,7 +212,7 @@ class Sword():
     def sword_right(self):
         self.sword_over.opacity = 255
         self.sword_under.opacity = 0
-        self.sword_over.image = HERO_IMAGES.sword
+        self.sword_over.image = self.sword_moving_image
         self.sword_over.x = self.parent.x+self.parent.width-8
         self.sword_over.y = self.parent.y+(self.parent.height//2)
         self.sword_over.scale = 0.5
@@ -208,7 +221,7 @@ class Sword():
     def sword_left(self):
         self.sword_over.opacity = 0
         self.sword_under.opacity = 255
-        self.sword_under.image = HERO_IMAGES.sword
+        self.sword_under.image = self.sword_moving_image
         self.sword_under.x = self.parent.x+5
         self.sword_under.y = self.parent.y-10
         self.sword_under.scale = 0.5
@@ -230,18 +243,37 @@ class Sword():
             if (self.facing == Facing.RIGHT):
                 self.slash.x += 10
                 self.slash.y -= 5
+        
             elif(self.facing == Facing.LEFT):
                 self.slash.rotation = 180
                 self.slash.x += self.slash.width - 15
                 self.slash.y += self.slash.height - 10
+             
             elif(self.facing == Facing.DOWN):
                 self.slash.rotation = 90
                 self.slash.y += self.slash.height - 20
+                
             elif(self.facing == Facing.UP):
                 self.slash.rotation = 270
                 self.slash.x += self.slash.width
                 self.slash.y += 10
+                
 
+            crystal_hit_check = self.parent.handle_sword_collisions(self.slash)
+            if crystal_hit_check != 0:
+                if crystal_hit_check == 1:
+                    self.sword_moving_image = HERO_IMAGES.sword_blue
+                    self.sword_still_image = HERO_IMAGES.sword_still_blue
+                    self.sword_power_up = 500
+                elif crystal_hit_check == 2: 
+                    self.sword_moving_image = HERO_IMAGES.sword_gold
+                    self.sword_still_image = HERO_IMAGES.sword_still_gold
+                    self.sword_power_up = 500
+                elif crystal_hit_check == 3: 
+                    self.sword_moving_image = HERO_IMAGES.sword_pink
+                    self.sword_still_image = HERO_IMAGES.sword_still_pink
+                    self.sword_power_up = 500
+                    
 class Facing(Enum):
     UP = 1
     DOWN = 2
